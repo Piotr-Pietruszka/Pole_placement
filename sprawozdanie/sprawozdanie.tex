@@ -1,0 +1,104 @@
+\documentclass[fleqn]{article}
+\newcommand\x{30}
+
+%\UseRawInputEncoding
+%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+%\usepackage[utf8]{inputenc}
+%\usepackage{polski}
+\usepackage[polish]{babel}
+
+\usepackage{graphicx} 
+
+\usepackage{float}
+
+\usepackage{geometry}
+
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{physics}
+\setlength\parindent{0pt}
+\def\doubleunderline#1{\underline{\underline{#1}}}
+
+\newcommand \A {1 - 0.8752 q^{-1}}
+\newcommand \B {0.1248 q^{-1}}
+\newcommand \Am {1 - 0.693 q^{-1}}
+\newcommand \Bm {3.684}
+\newcommand \aOne {-0.8752}
+\newcommand \amOne {-0.693}
+
+\newcommand \bOne {0.1248} 
+\newcommand \G {0.1821} 
+\begin{document}
+  
+\section{Założenia}
+
+Obiekt sterowania:
+\begin{equation}\label{eq:Gp}
+G_p(s) = \frac{e^{-2s}}{1 + 15s}
+\end{equation}
+
+Wymagania:
+\begin{equation}\label{eq:wymagania}
+\begin{split}
+& ks = 12 \\
+& Tn = 15 \\
+& Ts = 2
+\end{split}
+\end{equation}
+
+Otrzymana transmitancja wzorcowa:
+\begin{equation}\label{eq:tr_ref}
+G_{ref}(s) = \frac{12}{5.455s + 1}
+\end{equation}
+
+\section{Dyskretyzacja}
+Po dyskretyzacji metodą ZOH (zero-order hold) otrzymano transmitancje dyskretne:
+\begin{equation}\label{eq:G_d}
+\begin{split}
+& G_p(q^{-1}) = q^{-1}\frac{\B}{\A} \\
+& G_{ref}(q^{-1}) = q^{-1}\frac{\Bm}{\Am}
+\end{split}
+\end{equation} % G_p(q^{-1}) = q^{-1}\frac{0.1248q^{-1}}{1 - 0.8752q^{-1}}
+
+Stąd:
+\begin{equation}\label{eq:A_B_m}
+\begin{split}
+& A = \A \\
+& B = \B \\
+& A_m = \Am \\
+& B_m = \Bm
+\end{split}
+\end{equation}
+
+Zakładając $G = g0$, $F=1$ i $A_0(q^{-1})=1$:
+\begin{equation}\label{eq:polynomials}
+\begin{split}
+& G(q^{-1}) = a_{m1} - a_1 = \amOne - (\aOne) = 0.1821 \\
+& S(q^{-1}) = G(q^{-1}) = 0.1821 \\
+& R(q^{-1}) = B(q^{-1})F(q^{-1}) = \B \times 1 = \B \\
+& T(q^{-1}) = A_0(q^{-1})B_m(q^{-1}) = 1 \times \Bm = \Bm \\
+\end{split}
+\end{equation}
+
+
+TEMP:
+% TEmp
+\begin{equation}\label{eq:calc_to_z}
+\begin{split}
+& \frac{T(q^{-1})}{R(q^{-1})} = \frac{\Bm}{\B} = \frac{\Bm z}{\bOne} ???\\
+& \frac{S(q^{-1})}{R(q^{-1})} = \frac{\G}{\B} ??? \\
+\end{split}
+\end{equation}
+
+
+\begin{equation}\label{eq:C}
+\begin{split}
+& C(q^{-1}) = A(q^{-1})F(q^{-1}) + q^{-k}G(q^{-1})  \\
+& C(q^{-1}) = \A + q^{-1} \G = 1 - 0.693 q^{-1} = A_m  \\
+& \frac{C(q^{-1})}{A(q^{-1})} = \frac{\Am}{\A}  = \frac{z \amOne}{z \aOne}\\
+\end{split}
+\end{equation}
+
+\end{document}
