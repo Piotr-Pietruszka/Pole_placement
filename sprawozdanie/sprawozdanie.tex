@@ -22,14 +22,17 @@
 \def\doubleunderline#1{\underline{\underline{#1}}}
 
 \newcommand \A {1 - 0.8752 q^{-1}}
-\newcommand \B {0.1248 q^{-1}}
+\newcommand \B {0.1248}
 \newcommand \Am {1 - 0.693 q^{-1}}
 \newcommand \Bm {3.684}
 \newcommand \aOne {-0.8752}
 \newcommand \amOne {-0.693}
 
 \newcommand \bOne {0.1248} 
-\newcommand \G {0.1821} 
+\newcommand \G {0.1594} 
+\newcommand \F {1 + 0.1821 q^{-1}} 
+
+\newcommand \R {\B + 0.0227 q^{-1}}
 \begin{document}
   
 \section{Założenia}
@@ -57,7 +60,7 @@ G_{ref}(s) = \frac{12}{5.455s + 1}
 Po dyskretyzacji metodą ZOH (zero-order hold) otrzymano transmitancje dyskretne:
 \begin{equation}\label{eq:G_d}
 \begin{split}
-& G_p(q^{-1}) = q^{-1}\frac{\B}{\A} \\
+& G_p(q^{-1}) = q^{-2}\frac{\B}{\A} \\
 & G_{ref}(q^{-1}) = q^{-1}\frac{\Bm}{\Am}
 \end{split}
 \end{equation} % G_p(q^{-1}) = q^{-1}\frac{0.1248q^{-1}}{1 - 0.8752q^{-1}}
@@ -72,26 +75,84 @@ Stąd:
 \end{split}
 \end{equation}
 
-Zakładając $G = g0$, $F=1$ i $A_0(q^{-1})=1$:
+Więc zera i bieguny:
+\begin{itemize}
+	\item obiekt, transmitancja ciągła: zera: brak, biegun: $-0.0667$
+	\item obiekt, transmitancja dyskretna: zero: $0+j0$, biegun: $0.8752$
+	\item transmitancja wzorcowa, ciągła: zera: brak, biegun: $-0.1833$
+	\item transmitancja wzorcowa dyskretna: zero: brak, biegun: $0.6930$
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/poles.png}
+    \caption{Zera i bieguny układów}
+    \label{fig:Poles}
+\end{figure}
+
+
+\section{Wielomiany sterownika pole placement i odpowiedź układu dyskretnego}
+
+Równanie diofantyczne: 
+\begin{equation}\label{eq:dioph}
+\begin{split}
+& A_m(q^{-1}) A_0(q^{-1}) = A(q^{-1}) F(q^{-1}) + q^{-k} G(q^{-1}) \\
+& (\Am) \times 1 = (\A) (1 + f_1 q^{-1}) + q^{-2} g_0 \\
+\end{split}
+\end{equation}
+
+\begin{equation}\label{eq:dioph_sol}
+\begin{split}
+%& \amOne q^{-1} = \aOne q^{-1} + f_1 q^{-1} \\
+%& 0 = \aOne f_1 q^{-2} + g_0 q^{-2} \\
+& F(q^{-1}) = \F \\
+& G(q^{-1}) = \G
+\end{split}
+\end{equation}
+
+Stąd wielomiany $R$, $S$, $T$:
 \begin{equation}\label{eq:polynomials}
 \begin{split}
-& G(q^{-1}) = a_{m1} - a_1 = \amOne - (\aOne) = 0.1821 \\
-& S(q^{-1}) = G(q^{-1}) = 0.1821 \\
-& R(q^{-1}) = B(q^{-1})F(q^{-1}) = \B \times 1 = \B \\
+& S(q^{-1}) = G(q^{-1}) = \G \\
+& R(q^{-1}) = B(q^{-1})F(q^{-1}) = \B (\F) = \R \\
 & T(q^{-1}) = A_0(q^{-1})B_m(q^{-1}) = 1 \times \Bm = \Bm \\
 \end{split}
 \end{equation}
 
 
-TEMP:
-% TEmp
-\begin{equation}\label{eq:calc_to_z}
+\begin{equation}\label{eq:contr_signal}
 \begin{split}
-& \frac{T(q^{-1})}{R(q^{-1})} = \frac{\Bm}{\B} = \frac{\Bm z}{\bOne} ???\\
-& \frac{S(q^{-1})}{R(q^{-1})} = \frac{\G}{\B} ??? \\
+& R(q^{-1}) u(t) = T(q^{-1}) y_r(t) - S(q^{-1}) y(t) \\
+& (\R) u(t) = \Bm y_r(t) - \G y(t) \\
+& u(t) = ( \Bm y_r(t) - \G y(t) - 0.0277 u(t-1) ) / 0.1248
 \end{split}
 \end{equation}
 
+\begin{equation}\label{eq:output}
+\begin{split}
+%& y(t+k) = \frac{B(q^{-1})}{A(q^{-1})} u(t) \\
+& y(t+k) A(q^{-1}) = B(q^{-1}) u(t) \\
+%& y(t+k) (\A) = \B u(t) \\
+& y(t+2) = -(\aOne) y(t+1) + \B u(t) \\
+\end{split}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/u_d.png}
+    \caption{Sygnał sterujący - obiekt dyskretny}
+    \label{fig:u_d}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/y_d.png}
+    \caption{Wyjście i sygnał referencyjny - obiekt dyskretny}
+    \label{fig:y_d}
+\end{figure}
+
+\section{Odpowiedź dla czasu ciągłego}
+TEMP:
 
 \begin{equation}\label{eq:C}
 \begin{split}
