@@ -33,6 +33,7 @@
 \newcommand \F {1 + 0.1821 q^{-1}} 
 
 \newcommand \R {\B + 0.0227 q^{-1}}
+\newcommand \T {\Bm}
 \begin{document}
   
 \section{Założenia}
@@ -150,6 +151,16 @@ Stąd wielomiany $R$, $S$, $T$:
     \caption{Wyjście i sygnał referencyjny - obiekt dyskretny}
     \label{fig:y_d}
 \end{figure}
+
+Z kolei transmitancje:
+\begin{equation}\label{eq:transmitances}
+\begin{split}
+& \frac{T(q^{-1})}{R(q^{-1})} = \frac{\T}{\R} = \frac{3.684 z}{0.1248z + 0.0227}\\
+& \frac{B(q^{-1})}{A(q^{-1})} q^{-k} = q^{-2}\frac{\B}{\A} = z^{-2} \frac{0.1248 z}{z - 0.8752}\\
+& \frac{S(q^{-1})}{R(q^{-1})} = \frac{\G}{\R} = \frac{0.1594 z}{0.1248z + 0.0227}\\
+\end{split}
+\end{equation}
+
 
 \section{Odpowiedź dla czasu ciągłego}
 TEMP:

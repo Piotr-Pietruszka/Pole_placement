@@ -34,12 +34,10 @@ r1 = b0*f1; % 0.0227
 r0 = b0; % 0.1248
 
 
-% sim_d(S, T, r1, r0, Ts, k, a1, b0, Tn);
+sim_d(S, T, r1, r0, Ts, k, a1, b0, Tn);
 % step(Gref_d)
 
-% figure(1)
-% hold on
-sim_c(S, T, r1, r0, Ts, k, Gp_c, Tn)
+% sim_c(S, T, r1, r0, Ts, k, Gp_c, Tn)
 
 
 function [] = sim_d(S, T, r1, r0, Ts, k, a1, b0, Tn)
@@ -61,6 +59,7 @@ function [] = sim_d(S, T, r1, r0, Ts, k, a1, b0, Tn)
     
     % plot
     figure(1)
+    hold on
     stairs(t_sim,u)
     title("u(t)")
     xlabel("t [s]")
@@ -77,7 +76,7 @@ end
 
 
 function sim_c(S, T, r1, r0, Ts, k, Gp_c, Tn)
-    
+    clc
     N = 500;
     total_time = N*Ts;
     step = 0.01; % simulation step
@@ -89,50 +88,69 @@ function sim_c(S, T, r1, r0, Ts, k, Gp_c, Tn)
     [a, b, c, d] = ssdata(gd);
     delay = gd.InputDelay;
     % Signals
-    u = zeros(1, M);
-    y = zeros(1, M);
-    x = zeros(1, M);
-    t_sim = (1:1:M-1)*step;
-    yr = gen_square_wave(round(20*Tn/step), M+1);
+    u = zeros(1, N+1);
+    counter = 2; % to count passed Ts
+    y = zeros(1, M+Ts_steps);
+    x = zeros(1, M+Ts_steps);
+    
+    t_sim = (1:1:M)*step;
+    yr = gen_square_wave(20*Tn/Ts, N+1);
     % temp? - discrete simulation ---------------
-    ud = zeros(1, M);
-    yd = zeros(1, M);
+    ud = zeros(1, N+1);
+    yd = zeros(1, N+1);
     a1 = -0.8752;
     b0 = 0.1248;
-    counter = 0;
+    
     %     ------------------------
     % Time loop
-    for t = delay+1:1:M-1
+    for t = Ts_steps+1:1:M-1
         % change control signal every Ts
-        if mod(t, Ts_steps)== 0
-           u(t:t+Ts_steps) = (-r1*u(t-Ts_steps) + T*yr(t) - S*y(t)) / r0;
+        if mod(t+Ts_steps, Ts_steps)== 0
+           u(counter) = (-r1*u(counter - 1) + T*yr(counter) - S*y(t)) / r0;
            %     ------------------------
-           ud(t:t+Ts_steps) = (-r1*ud(t-Ts_steps) + T*yr(t) - S*yd(t)) / r0;
-           yd(t+Ts_steps:t+2*Ts_steps) = -a1*yd(t+Ts_steps) + b0*ud(t);
-           if counter ==1 % temp2
-               % print something
-           end
+           ud(counter) = (-r1*ud(counter-1) + T*yr(counter) - S*yd(counter)) / r0;
+           yd(counter+2) = -a1*yd(counter+1) + b0*ud(counter);
            counter = counter + 1;
            %     ------------------------
         end
-        % calculate new system response very step
-        x(t+1) = a*x(t) + b*u(t-delay);
+        % calculate new system response every step
+        x(t+1) = a*x(t) + b*u(counter-1);
         y(t) = c*x(t);
+        
+         % just print some info
+         if mod(t+Ts_steps, Ts_steps)== 0 && counter < 30
+             t_cd = [t, t+Ts_steps, counter-1]
+             y_cd = [y(t), yd(counter)]
+         end
     end
+    
     %     ------------------------
-    ud = ud(1:end-1);
-    yd = yd(1:end-Ts_steps-1);
+    t_sim_d = 1:Ts:Ts*N;
+    ud = ud(2:end);
+    yd = yd(2:end);
+    yr = yr(2:end);
+    u = u(2:end);
+    y = y(Ts_steps:end-1);
 %     size(yd)
-%     size(t_sim)
-%     plot(t_sim, ud)
-    plot(t_sim, yd)
+%     size(t_sim_d)
+    
+    stairs(t_sim_d, ud)
     hold on
+    stairs(t_sim_d, u)
+    hold off
+    
+    figure(2)
+    plot(t_sim, y)
+    hold on
+    stairs(t_sim_d, yd)
+    stairs(t_sim_d, yr)
+    hold off
     %     ------------------------
     
-    y = y(1:end-1);
-    u = u(1:end-1);
-%     plot(t_sim, u)
-    plot(t_sim, y)
+%     y = y(1:end-1);
+%     u = u(1:end-1);
+%     stairs(u)
+%     plot(t_sim, y)
 %     plot(yr)
     
 end
