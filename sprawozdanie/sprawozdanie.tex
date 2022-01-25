@@ -94,6 +94,8 @@ Więc zera i bieguny:
 
 \section{Wielomiany sterownika pole placement i odpowiedź układu dyskretnego}
 
+W celu uzyskania parametrów wzorcowego układu wykorzystano sterownik z pozycjonowaniem biegunów (ang. pole placement). Został on wybrany, gdyż umożliwia, w stosunkowo łatwy sposób, modyfikację układu, tak by uzyskać uzyskał on właściwości układu zadanego.   
+
 Równanie diofantyczne: 
 \begin{equation}\label{eq:dioph}
 \begin{split}
@@ -120,39 +122,7 @@ Stąd wielomiany $R$, $S$, $T$:
 \end{split}
 \end{equation}
 
-
-\begin{equation}\label{eq:contr_signal}
-\begin{split}
-& R(q^{-1}) u(t) = T(q^{-1}) y_r(t) - S(q^{-1}) y(t) \\
-& (\R) u(t) = \Bm y_r(t) - \G y(t) \\
-& u(t) = ( \Bm y_r(t) - \G y(t) - 0.0277 u(t-1) ) / 0.1248
-\end{split}
-\end{equation}
-
-\begin{equation}\label{eq:output}
-\begin{split}
-%& y(t+k) = \frac{B(q^{-1})}{A(q^{-1})} u(t) \\
-& y(t+k) A(q^{-1}) = B(q^{-1}) u(t) \\
-%& y(t+k) (\A) = \B u(t) \\
-& y(t+2) = -(\aOne) y(t+1) + \B u(t) \\
-\end{split}
-\end{equation}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{img/u_d.png}
-    \caption{Sygnał sterujący - obiekt dyskretny}
-    \label{fig:u_d}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{img/y_d.png}
-    \caption{Wyjście i sygnał referencyjny - obiekt dyskretny}
-    \label{fig:y_d}
-\end{figure}
-
-Z kolei transmitancje:
+I transmitancje:
 \begin{equation}\label{eq:transmitances}
 \begin{split}
 & \frac{T(q^{-1})}{R(q^{-1})} = \frac{\T}{\R} = \frac{3.684 z}{0.1248z + 0.0227}\\
@@ -161,16 +131,89 @@ Z kolei transmitancje:
 \end{split}
 \end{equation}
 
+%\begin{equation}\label{eq:contr_signal}
+%\begin{split}
+%& R(q^{-1}) u(t) = T(q^{-1}) y_r(t) - S(q^{-1}) y(t) \\
+%& (\R) u(t) = \Bm y_r(t) - \G y(t) \\
+%& u(t) = ( \Bm y_r(t) - \G y(t) - 0.0277 u(t-1) ) / 0.1248
+%\end{split}
+%\end{equation}
+
+%\begin{equation}\label{eq:output}
+%\begin{split}
+%& y(t+k) = \frac{B(q^{-1})}{A(q^{-1})} u(t) \\
+%& y(t+k) A(q^{-1}) = B(q^{-1}) u(t) \\
+%& y(t+k) (\A) = \B u(t) \\
+%& y(t+2) = -(\aOne) y(t+1) + \B u(t) \\
+%\end{split}
+%\end{equation}
+Wszystkie symulacje przeprowadzono przy pomocy programu Simulink.
+
+Otrzymana odpowiedź jest bliska oczekiwanej. Wzmocnienie statyczne jest prawidłowe, czas narastania nieco dłuższy niż wymagany. Czas jest nieco dłuższy z racji na opóźnienie transportowe - na rys. \ref{fig:y_d_ref} widać, że sygnał uzyskany przy użyciu sterownika różni się od odpowiedzi skokowej zadanego układu jedynie opóźnieniem.
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=1\textwidth]{img/u_d.png}
+    \includegraphics[width=1\textwidth]{img/u_y_d.png}
+    \caption{Sygnał wyjściowy i Sygnał sterujący - obiekt dyskretny}
+    \label{fig:u_y_d}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=1\textwidth]{img/u_d.png}
+    \includegraphics[width=1\textwidth]{img/y_d_ref.png}
+    \caption{Sygnał wyjściowy obiektu dyskretnego, razem z sygnałem pożądanego układu}
+    \label{fig:y_d_ref}
+\end{figure}
+
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[width=1\textwidth]{img/y_d.png}
+%    \caption{Wyjście i sygnał referencyjny - obiekt dyskretny}
+%    \label{fig:y_d}
+%\end{figure}
+
+
+
 
 \section{Odpowiedź dla czasu ciągłego}
-TEMP:
 
-\begin{equation}\label{eq:C}
-\begin{split}
-& C(q^{-1}) = A(q^{-1})F(q^{-1}) + q^{-k}G(q^{-1})  \\
-& C(q^{-1}) = \A + q^{-1} \G = 1 - 0.693 q^{-1} = A_m  \\
-& \frac{C(q^{-1})}{A(q^{-1})} = \frac{\Am}{\A}  = \frac{z \amOne}{z \aOne}\\
-\end{split}
-\end{equation}
+\subsection{Brak szumu pomiarowego}
+
+Na rys. \ref{fig:y_c} widać, że zaprojektowany sterownik działa poprawnie również dla układu ciągłego. Na wykresie przedstawiono, dla odniesienia, przebieg sygnału dyskretnego z rys. \ref{fig:u_y_d}. Sygnał ciągły niewiele się od niego różni, a pomiędzy chwilami próbkowania nie ma niepożądanych oscylacji. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/y_c.png}
+    \caption{Sygnał wyjściowy - obiekt ciągły (i dyskretny dla odniesienia)}
+    \label{fig:y_c}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/u_c.png}
+    \caption{Sygnał sterujący - obiekt ciągły}
+    \label{fig:u_c}
+\end{figure}
+
+
+\subsection{Obecność szumu pomiarowego}
+Odpowiedź układu na pobudzenie, przy obecności szumu pomiarowego o rozkładanie normalnym i wariancji $\delta_n=0.1$ przedstawiono na rys. \ref{fig:y_noise}. Szum nie wpływa znacząco na działanie obiektu.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/y_noise.png}
+    \caption{Sygnał wyjściowy - obiekt ciągły z zakłóceniami}
+    \label{fig:y_noise}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/u_noise.png}
+    \caption{Sygnał sterujący - obiekt ciągły z zakłóceniami}
+    \label{fig:u_noise}
+\end{figure}
+
 
 \end{document}
