@@ -11,7 +11,7 @@ Gref = tf(ks, [Tn/2.2, 1])
 Gref_d = c2d(Gref, Ts, 'zoh')
 
 % plot zeros and poles
-plot__pz(Gp_c, Gp_d, Gref, Gref_d)
+% plot__pz(Gp_c, Gp_d, Gref, Gref_d)
 
 
 % Polynomial's coefficients
@@ -39,8 +39,8 @@ r0 = b0; % 0.1248
 % sim_c(S, T, r1, r0, Ts, k, Gp_c, Tn)
 
 
-% Discrete-time simulation
 function [] = sim_d(S, T, r1, r0, Ts, k, a1, b0, Tn)
+    % Discrete-time simulation
     N = 500;
     t_sim = 1:Ts:Ts*N;    
     u = zeros(1, N+1);
@@ -72,6 +72,9 @@ function [] = sim_d(S, T, r1, r0, Ts, k, a1, b0, Tn)
     xlabel("t [s]")
 
 end
+
+
+
 
 
 % genereate square wave
